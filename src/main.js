@@ -1,3 +1,4 @@
+import Swal from 'sweetalert2';
 import { searchCep } from './helpers/cepFunctions';
 import './style.css';
 import {
@@ -25,7 +26,17 @@ const renderProduct = async () => {
 
 window.onload = () => {
   loading();
-  renderProduct();
+  renderProduct().catch(() => {
+    document.querySelector('.loading').innerHTML = '';
+    /* h3el.classList.add('error');
+    h3el.classList.remove('loading');
+    h3el.innerHTML = 'Algum erro ocorreu, recarregue a página e tente novamente'; */
+    // solução com Swal.;
+    Swal.fire({
+      title: 'Algum erro ocorreu, recarregue a página e tente novamente',
+      customClass: { title: 'error' },
+    });
+  });
 };
 
 document.querySelector('.cep-button').addEventListener('click', searchCep);
