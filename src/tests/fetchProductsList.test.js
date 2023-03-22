@@ -23,7 +23,7 @@ describe('Teste a função fetchProductsList', () => {
   });
   
   it('throw Error e imprime no console a mensagem: Termo de busca não informado', () => {
-    expect( () => {  fetchProductsList() }).toThrowError();
-    expect( () => {  fetchProductsList() }).toThrow('Termo de busca não informado');
+    expect( () => { fetchProductsList() }).toThrowError();
+    expect( () => { fetchProductsList() }).toThrow('Termo de busca não informado');
   })
 })
