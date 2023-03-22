@@ -29,8 +29,8 @@ window.onload = () => {
   renderProduct().catch(() => {
     document.querySelector('.loading').innerHTML = '';
     /* h3el.classList.add('error');
-    h3el.classList.remove('loading');
-    h3el.innerHTML = 'Algum erro ocorreu, recarregue a página e tente novamente'; */
+      h3el.classList.remove('loading');
+      h3el.innerHTML = 'Algum erro ocorreu, recarregue a página e tente novamente'; */
     // solução com Swal.;
     Swal.fire({
       title: 'Algum erro ocorreu, recarregue a página e tente novamente',
