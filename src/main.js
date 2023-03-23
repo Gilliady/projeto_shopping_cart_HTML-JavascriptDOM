@@ -6,11 +6,21 @@ import {
   /* createCartProductElement, */
   createProductElement,
 } from './helpers/shopFunctions';
-import { saveCartID } from './helpers/cartFunctions';
+import { getSavedCartIDs, saveCartID } from './helpers/cartFunctions';
 import { fetchProductsList, fetchProduct } from './helpers/fetchFunctions';
 
 const productsSection = document.querySelector('.products');
 const cartSection = document.querySelector('.cart__products');
+
+const updateTotalValue = () => {
+  const values = document.querySelectorAll('li .product__price__value');
+  const totalPrice = document.querySelector('.total-price');
+  totalPrice.innerText = Array.prototype.reduce.call(
+    values,
+    (acc, curr) => acc + Number(curr.innerText),
+    0,
+  );
+};
 
 const loading = () => {
   const loadingText = document.createElement('h3');
@@ -27,14 +37,33 @@ const renderProduct = async () => {
   });
 };
 
+const addOnCart = async (productData) => {
+  saveCartID(productData.id);
+  const elementCreated = createCartProductElement(productData);
+  cartSection.append(elementCreated);
+  elementCreated.addEventListener('click', updateTotalValue);
+  updateTotalValue();
+};
+
+const loadCartFromLocalStorage = async () => {
+  const productsData = getSavedCartIDs().map((id) => fetchProduct(id));
+  await Promise.all(productsData).then((products) => {
+    localStorage.setItem('cartProducts', '');
+    products.forEach((product) => {
+      addOnCart(product);
+    });
+  });
+  updateTotalValue();
+};
+
 const addEventOnAddOnCartButton = () => {
   const addOnCartButtons = document.querySelectorAll('.product__add');
-  addOnCartButtons.forEach((button) => {
+  addOnCartButtons.forEach(async (button) => {
     button.addEventListener('click', async () => {
-      const productID = button.parentNode.firstChild.innerText;
-      saveCartID(productID);
-      const productData = await fetchProduct(productID);
-      cartSection.append(createCartProductElement(productData));
+      const productData = await fetchProduct(
+        button.parentNode.firstChild.innerText,
+      );
+      await addOnCart(productData);
     });
   });
 };
@@ -42,7 +71,10 @@ const addEventOnAddOnCartButton = () => {
 window.onload = () => {
   loading();
   renderProduct()
-    .then(() => addEventOnAddOnCartButton()).catch(() => {
+    .then(() => {
+      addEventOnAddOnCartButton();
+    })
+    .catch(() => {
       document.querySelector('.loading').innerHTML = '';
       // solução padrão:
       /* h3el.classList.add('error');
@@ -54,6 +86,9 @@ window.onload = () => {
         customClass: { title: 'error' },
       });
     });
+  if (localStorage.getItem('cartProducts')) {
+    loadCartFromLocalStorage();
+  }
 };
 
 document.querySelector('.cep-button').addEventListener('click', searchCep);
