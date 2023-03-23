@@ -91,4 +91,5 @@ window.onload = () => {
   }
 };
 
-document.querySelector('.cep-button').addEventListener('click', searchCep);
+document.querySelector('.cep-button')
+  .addEventListener('click', searchCep);

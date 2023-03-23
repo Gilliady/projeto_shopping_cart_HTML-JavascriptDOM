@@ -18,8 +18,8 @@ describe('Teste a função fetchProductsList', () => {
     expect(fetch).toBeCalledWith('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   });
   
-  it('retorno ao executar fetchProductsList', () => {
-    expect((typeof fetchProductsList('computador'))).toBe(typeof computadorSearch);
+  it('retorno ao executar fetchProductsList', async() => {
+    expect((await fetchProductsList('computador'))).toEqual(computadorSearch);
   });
   
   it('throw Error e imprime no console a mensagem: Termo de busca não informado', () => {

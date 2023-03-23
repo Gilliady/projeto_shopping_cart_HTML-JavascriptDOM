@@ -6,12 +6,15 @@ export const getAddress = async (cep) => {
     fetch(`${brasilAPIBaseURL}${cep}`)])
     .then((response) => response.json())
     .then((data) => data);
-  const { address, district, city, state } = cepResponse;
-  if (!cepResponse.address || !cepResponse.district
-      || !cepResponse.city || !cepResponse.state) {
-    throw new Error();
+  if (cepResponse.address) {
+    const { address, district, city, state } = cepResponse;
+    return `${address} - ${district} - ${city} - ${state}`;
   }
-  return `${address} - ${district} - ${city} - ${state}`;
+  if (cepResponse.street) {
+    const { street, city, state, neighborhood } = cepResponse;
+    return `${street} - ${neighborhood} - ${city} - ${state}`;
+  }
+  throw new Error();
 };
 
 export const searchCep = async () => {
@@ -19,7 +22,7 @@ export const searchCep = async () => {
   try {
     const result = await getAddress(document.querySelector('.cep-input').value);
     document.querySelector('.cart__address').innerHTML = result;
-  } catch (error) {
-    document.querySelector('.cart__address').innerHTML = 'CEP não encontrado';
+  } catch (e) {
+    document.querySelector('.cart__address').innerText = 'CEP não encontrado';
   }
 };
